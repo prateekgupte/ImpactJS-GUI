@@ -120,6 +120,10 @@ ig.module('plugins.gui')
 				if(element.active == undefined) element.active = false;
 				if(element.showTitle == undefined || (element.font == undefined)) element.showTitle = false;
 				if(element.showBind == undefined || (element.font == undefined)) element.showBind = false;
+				if(element.hoverOffset == undefined)  element.hoverOffset = {};
+				if(element.hoverOffset.x == undefined) element.hoverOffset.x = 0;
+				if(element.hoverOffset.y == undefined) element.hoverOffset.y = 0;
+				
 				
 				ig.gui.elements.push(element);
 			},
@@ -136,6 +140,13 @@ ig.module('plugins.gui')
 						!element.disabled) {
 						state = 'hover';
 					}
+					
+					// Hover Function
+					//if(state == 'hover')
+					//{
+					//	if(typeof ig.gui.elements[i].hover == 'function')
+					//			ig.gui.elements[i].hover.call(element);						
+					//}
 					
 					// Pressed by Mouse OR Keybind
 					if((state == 'hover' && (ig.input.state('mouse1') || ig.input.pressed('mouse1'))) || (ig.input.pressed(element.keybind))) {
@@ -167,9 +178,15 @@ ig.module('plugins.gui')
 					// Image
 					var image = ig.gui.elements[i].state[state];
 					if(isNaN(image.tile) || isNaN(image.tileSize)) {
-						image.image.draw(element.pos.x, element.pos.y);
+						if(state == 'hover')
+							image.image.draw(element.pos.x + element.hoverOffset.x, element.pos.y + element.hoverOffset.y);
+						else
+							image.image.draw(element.pos.x, element.pos.y);
 					} else {
-						image.image.drawTile(element.pos.x, element.pos.y, image.tile, image.tileSize);
+						if(state == 'hover')
+							image.image.drawTile(element.pos.x + element.hoverOffset.x , element.pos.y + element.hoverOffset.y, image.tile, image.tileSize);
+						else
+							image.image.drawTile(element.pos.x , element.pos.y, image.tile, image.tileSize);
 					}
 					// Icon
 					var icon = ig.gui.elements[i].icon;
